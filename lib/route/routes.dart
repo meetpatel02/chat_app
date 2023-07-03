@@ -1,17 +1,22 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:chat_app/screen/login_screen.dart';
-import 'package:chat_app/screen/splash_screen.dart';
+import 'package:chat_app/view/chat_screen/binding.dart';
+import 'package:chat_app/view/chat_screen/view.dart';
+import 'package:chat_app/view/login/binding.dart';
+import 'package:chat_app/view/login/view.dart';
+import 'package:chat_app/view/otp/binding.dart';
+import 'package:chat_app/view/otp/view.dart';
+import 'package:chat_app/view/phone_login/binding.dart';
+import 'package:chat_app/view/phone_login/view.dart';
+import 'package:chat_app/view/splash/view.dart';
+import 'package:chat_app/view/user_create/binding.dart';
+import 'package:chat_app/view/user_create/view.dart';
 import 'package:get/get.dart';
 
 
 import '../screen/chatScreen_bgchange.dart';
-import '../screen/chat_screen.dart';
-import '../screen/otp_screen.dart';
-import '../screen/phonelogin_screen.dart';
-import '../screen/profile_screen.dart';
-import '../screen/userProfile_name.dart';
 import '../utils/navigationbar.dart';
+import '../view/splash/binding.dart';
 
 class RoutesClass {
   static String splash = '/';
@@ -33,23 +38,19 @@ class RoutesClass {
   static String getChatBackground() => chatBackground;
 
   static List<GetPage> routes = [
-    GetPage(name: splash, page: ()=>SplashScreen()),
-    GetPage(name: login, page: () => LoginScreen(),transition: Transition.fade),
+    GetPage(name: splash, page: ()=>SplashPage(),binding: SplashBinding()),
+    GetPage(name: login, page: () => LoginPage(),transition: Transition.fade,binding: LoginBinding()),
     GetPage(
         name: home, page: () => NavigationBar(), transition: Transition.fade),
-    GetPage(name: chat, page: () => ChatScreen(), transition: Transition.fade),
+    GetPage(name: chat, page: () => ChatScreenPage(), transition: Transition.fade,binding: ChatScreenBinding()),
+
     GetPage(
-        name: profile,
-        page: () => ProfileScreen(),
-        transition: Transition.fade),
+        name: phoneLogin, page: () => PhoneLoginPage(), transition: Transition.fade,binding: PhoneLoginBinding()),
     GetPage(
-        name: phoneLogin, page: () => PhoneLogin(), transition: Transition.fade),
+        name: otpScreen, page: () => OtpPage(), transition: Transition.fade,binding: OtpBinding()),
     GetPage(
-        name: otpScreen, page: () => VerifyPhone(verificationId: '',), transition: Transition.fade),
-    GetPage(
-        name: userCreate, page: () => UserCreate(), transition: Transition.fade),
+        name: userCreate, page: () => UserCreatePage(), transition: Transition.fade,binding: UserCreateBinding()),
     GetPage(
         name: chatBackground, page: () => ChatScreenBackgroundChange(), transition: Transition.fade),
-
   ];
 }

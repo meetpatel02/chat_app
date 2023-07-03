@@ -1,33 +1,15 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, sized_box_for_whitespace
-
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class CallScreen extends StatefulWidget {
-  const CallScreen({Key? key}) : super(key: key);
+import 'logic.dart';
 
-  @override
-  State<CallScreen> createState() => _CallScreenState();
-}
+class CallScreenPage extends StatelessWidget {
+  CallScreenPage({Key? key}) : super(key: key);
 
-class _CallScreenState extends State<CallScreen> {
-  List callUserList = ['Meet', 'Kush', 'Jimil', 'Prince'];
-  List<Color> callUserColor = [
-    Color(0xFF808080),
-    Color(0xFFFF0000),
-    Color(0xFF808080),
-    Color(0xFFFF0000),
-  ];
-  List<Icon> callIcon = [
-    Icon(Icons.videocam),
-    Icon(Icons.call),
-    Icon(Icons.videocam),
-    Icon(Icons.call)
-  ];
+  final logic = Get.find<CallScreenLogic>();
+  final state = Get.find<CallScreenLogic>().state;
 
   @override
   Widget build(BuildContext context) {
@@ -61,8 +43,8 @@ class _CallScreenState extends State<CallScreen> {
                         ),
                         child: Center(
                             child: Image(
-                          image: AssetImage('assets/images/Male Memojis.png'),
-                        )),
+                              image: AssetImage('assets/images/Male Memojis.png'),
+                            )),
                       ),
                       SizedBox(
                         width: 30,
@@ -145,7 +127,7 @@ class _CallScreenState extends State<CallScreen> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
+                              const EdgeInsets.only(left: 10, right: 10),
                               child: SizedBox(
                                 height: 45,
                                 child: CupertinoSearchTextField(
@@ -159,7 +141,7 @@ class _CallScreenState extends State<CallScreen> {
                             ),
                             Flexible(
                               child: ListView.builder(
-                                itemCount: callUserList.length,
+                                itemCount: logic.callUserList.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
                                     margin: EdgeInsets.only(
@@ -177,13 +159,13 @@ class _CallScreenState extends State<CallScreen> {
                                     decoration: BoxDecoration(
                                         color: context.theme.cardColor,
                                         borderRadius:
-                                            BorderRadius.circular(20)),
+                                        BorderRadius.circular(20)),
                                     child: Center(
                                       child: Column(
                                         children: [
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
@@ -197,8 +179,8 @@ class _CallScreenState extends State<CallScreen> {
                                                             'assets/images/Male Memojis.png'),
                                                       ),
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              100),
+                                                      BorderRadius.circular(
+                                                          100),
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -206,24 +188,24 @@ class _CallScreenState extends State<CallScreen> {
                                                   ),
                                                   Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       Text(
-                                                        callUserList[index],
+                                                        logic.callUserList[index],
                                                         style: TextStyle(
                                                           fontSize: 16,
                                                           fontWeight:
-                                                              FontWeight.bold,
-                                                          color: callUserColor[
-                                                              index],
+                                                          FontWeight.bold,
+                                                          color: logic.callUserColor[
+                                                          index],
                                                         ),
                                                       ),
                                                       Row(
                                                         children: [
-                                                          callIcon[index],
+                                                          logic.callIcon[index],
                                                           SizedBox(
                                                             width: 5,
                                                           ),
@@ -263,7 +245,7 @@ class _CallScreenState extends State<CallScreen> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
+                              const EdgeInsets.only(left: 10, right: 10),
                               child: SizedBox(
                                 height: 45,
                                 child: CupertinoSearchTextField(
@@ -277,7 +259,7 @@ class _CallScreenState extends State<CallScreen> {
                             ),
                             Flexible(
                               child: ListView.builder(
-                                itemCount: callUserList.length,
+                                itemCount: logic.callUserList.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return Container(
                                     margin: EdgeInsets.only(
@@ -292,13 +274,13 @@ class _CallScreenState extends State<CallScreen> {
                                     decoration: BoxDecoration(
                                         color: context.theme.cardColor,
                                         borderRadius:
-                                            BorderRadius.circular(20)),
+                                        BorderRadius.circular(20)),
                                     child: Center(
                                       child: Column(
                                         children: [
                                           Row(
                                             mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
+                                            MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
@@ -312,8 +294,8 @@ class _CallScreenState extends State<CallScreen> {
                                                             'assets/images/Male Memojis.png'),
                                                       ),
                                                       borderRadius:
-                                                          BorderRadius.circular(
-                                                              100),
+                                                      BorderRadius.circular(
+                                                          100),
                                                     ),
                                                   ),
                                                   SizedBox(
@@ -321,23 +303,23 @@ class _CallScreenState extends State<CallScreen> {
                                                   ),
                                                   Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment.start,
+                                                    MainAxisAlignment.start,
                                                     crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                    CrossAxisAlignment
+                                                        .start,
                                                     children: [
                                                       Text(
-                                                        callUserList[index],
+                                                        logic.callUserList[index],
                                                         style: TextStyle(
                                                             color: Colors.red,
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight
+                                                                .bold),
                                                       ),
                                                       Row(
                                                         children: [
-                                                          callIcon[index],
+                                                          logic.callIcon[index],
                                                           SizedBox(
                                                             width: 5,
                                                           ),

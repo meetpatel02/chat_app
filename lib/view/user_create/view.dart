@@ -1,40 +1,18 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../GetxControllers/profilePic_controller.dart';
-import '../route/routes.dart';
-import '../utils/custome_button.dart';
+import '../../route/routes.dart';
+import '../../utils/custome_button.dart';
+import 'logic.dart';
 
-class UserCreate extends StatefulWidget {
-  const UserCreate({super.key});
+class UserCreatePage extends StatelessWidget {
+  UserCreatePage({Key? key}) : super(key: key);
 
-  @override
-  State<UserCreate> createState() => _UserCreateState();
-}
-
-class _UserCreateState extends State<UserCreate> {
-  var number = Get.arguments;
-  final phoneController = TextEditingController();
-  final nameController = TextEditingController();
-
-
-  ProfilePicController profilePicController = Get.put(ProfilePicController());
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    phoneController.text = number[0];
-    print(number[0]);
-  }
+  final logic = Get.find<UserCreateLogic>();
+  final state = Get.find<UserCreateLogic>().state;
 
   @override
   Widget build(BuildContext context) {
@@ -65,44 +43,48 @@ class _UserCreateState extends State<UserCreate> {
             Center(
               child: Stack(
                 children: [
-                  Obx(() => Container(
-                    margin: EdgeInsets.only(top: 20),
-                    height: 150,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.black,
-                      // image: DecorationImage(
-                      //   image: NetworkImage(
-                      //       'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg'),
-                      // ),
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                          color: context.theme.shadowColor,
-                          blurRadius: 29.0,
-                          spreadRadius: 1,
-                          offset: Offset(0.0, 0.75),
-                        ),
-                      ],
+                  Obx(
+                    () => Container(
+                      margin: EdgeInsets.only(top: 20),
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.black,
+                        // image: DecorationImage(
+                        //   image: NetworkImage(
+                        //       'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg'),
+                        // ),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: context.theme.shadowColor,
+                            blurRadius: 29.0,
+                            spreadRadius: 1,
+                            offset: Offset(0.0, 0.75),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                          backgroundImage: logic.path.isNotEmpty
+                              ? FileImage(File(logic.path.toString()))
+                              : NetworkImage(
+                                      'https://www.getillustrations.com/photos/pack/3d-avatar-male_lg.png')
+                                  as ImageProvider),
+                      // child: image != null
+                      //     ? ClipOval(
+                      //         child: Image.file(
+                      //           image!,
+                      //           fit: BoxFit.cover,
+                      //         ),
+                      //       )
+                      //     : ClipOval(
+                      //         child: Image(
+                      //           image: NetworkImage(
+                      //               'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg'),
+                      //         ),
+                      //       ),
                     ),
-                    child:
-                    CircleAvatar(
-                        backgroundImage: profilePicController.path.isNotEmpty ? FileImage(File(profilePicController.path.toString())): NetworkImage('https://www.getillustrations.com/photos/pack/3d-avatar-male_lg.png') as ImageProvider
-                    ),
-                    // child: image != null
-                    //     ? ClipOval(
-                    //         child: Image.file(
-                    //           image!,
-                    //           fit: BoxFit.cover,
-                    //         ),
-                    //       )
-                    //     : ClipOval(
-                    //         child: Image(
-                    //           image: NetworkImage(
-                    //               'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg'),
-                    //         ),
-                    //       ),
-                  ),),
+                  ),
                   Positioned(
                     right: 10.0,
                     bottom: 0.0,
@@ -116,7 +98,8 @@ class _UserCreateState extends State<UserCreate> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
-                          border: Border.all(color: Colors.black.withOpacity(0.25)),
+                          border:
+                              Border.all(color: Colors.black.withOpacity(0.25)),
                           boxShadow: <BoxShadow>[
                             BoxShadow(
                               color: context.theme.shadowColor,
@@ -178,7 +161,7 @@ class _UserCreateState extends State<UserCreate> {
                       ),
                       Flexible(
                         child: TextField(
-                          controller: phoneController,
+                          controller: logic.phoneController,
                           showCursor: false,
                           readOnly: true,
                           style: TextStyle(
@@ -209,7 +192,7 @@ class _UserCreateState extends State<UserCreate> {
                       ),
                       Flexible(
                         child: TextField(
-                          controller: nameController,
+                          controller: logic.nameController,
                           keyboardType: TextInputType.name,
                           textInputAction: TextInputAction.done,
                           style: TextStyle(
@@ -232,20 +215,8 @@ class _UserCreateState extends State<UserCreate> {
                     height: 20,
                   ),
                   GestureDetector(
-                    onTap: ()async {
-                      var userName = nameController.text.toString();
-                      if (nameController.text.trim().isEmpty) {
-                        Get.snackbar(
-                          'Error',
-                          'Please Enter Your Name',
-                          colorText: Colors.white,
-                          backgroundColor: Colors.red,
-                          duration: Duration(seconds: 2),
-                        );
-                      } else {
-                        Get.toNamed(RoutesClass.getHome(),
-                            arguments: [userName]);
-                      }
+                    onTap: () async {
+                      logic.checkName();
                     },
                     child: Container(
                       height: 60,
@@ -302,7 +273,7 @@ class _UserCreateState extends State<UserCreate> {
               onTap: () async {
                 PermissionStatus storage = await Permission.camera.request();
                 if (storage == PermissionStatus.granted) {
-                  profilePicController.getCameraImage();
+                  logic.getCameraImage();
                 } else if (storage == PermissionStatus.denied) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('This permission is required')));
@@ -338,7 +309,8 @@ class _UserCreateState extends State<UserCreate> {
                                   },
                                   color: Color(0XFFc4c4c4),
                                 ),
-                              ), SizedBox(
+                              ),
+                              SizedBox(
                                 width: 100,
                                 child: Button(
                                   child: Text('Setting',
@@ -349,7 +321,7 @@ class _UserCreateState extends State<UserCreate> {
                                       )),
                                   onPressed: () {
                                     openAppSettings();
-                                   Get.back();
+                                    Get.back();
                                   },
                                   color: Color(0XFFc4c4c4),
                                 ),
@@ -401,7 +373,7 @@ class _UserCreateState extends State<UserCreate> {
               onTap: () async {
                 PermissionStatus storage = await Permission.storage.request();
                 if (storage == PermissionStatus.granted) {
-                  profilePicController.getGalleryImage();
+                  logic.getGalleryImage();
                 } else if (storage == PermissionStatus.denied) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('This permission is required')));
@@ -495,4 +467,3 @@ class _UserCreateState extends State<UserCreate> {
     );
   }
 }
-

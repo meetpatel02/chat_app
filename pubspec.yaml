@@ -32,7 +32,6 @@ dependencies:
     sdk: flutter
   get:
   http:
-  file_picker:
   image_picker:
   intl:
   flutter_keyboard_visibility:

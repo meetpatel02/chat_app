@@ -1,20 +1,15 @@
-// ignore_for_file: sized_box_for_whitespace, prefer_const_constructors, prefer_const_literals_to_create_immutables, deprecated_member_use
-
-import 'package:bouncing_button/bouncing_button.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../route/routes.dart';
+import '../../route/routes.dart';
+import 'logic.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginPage extends StatelessWidget {
+  LoginPage({Key? key}) : super(key: key);
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
+  final logic = Get.find<LoginLogic>();
+  final state = Get.find<LoginLogic>().state;
 
-class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               boxShadow: [
                                 BoxShadow(
                                   color:
-                                      const Color(0xFF8863F9).withOpacity(0.40),
+                                  const Color(0xFF8863F9).withOpacity(0.40),
                                   spreadRadius: 4,
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
@@ -121,64 +116,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
-
-void bottomSheet(BuildContext context) {
-  showModalBottomSheet(
-      context: context,
-      barrierColor: Colors.transparent,
-      enableDrag: true,
-      builder: (BuildContext bc) {
-        return Container(
-          height: 300,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(30),
-              topRight: Radius.circular(30),
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  height: 10,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius: BorderRadius.circular(100)),
-                ),
-              ),
-              Text(
-                'Login With Phone',
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              CupertinoButton(
-                onPressed: () {
-                  Get.back();
-                  Get.toNamed(RoutesClass.getPhoneLogin());
-                },
-                color: Color(0xFF8863F9),
-                child: Text(
-                  'Continue',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-            ],
-          ),
-        );
-      });
 }

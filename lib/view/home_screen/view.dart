@@ -1,35 +1,20 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, sized_box_for_whitespace, prefer_const_constructors
+// ignore_for_file: must_be_immutable
 
 import 'dart:math';
-import 'package:chat_app/api/user_api.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import '../../route/routes.dart';
+import 'logic.dart';
 
-import '../route/routes.dart';
+class HomeScreenPage extends StatelessWidget {
+  HomeScreenPage({Key? key}) : super(key: key);
 
-class HomeScreen extends StatefulWidget {
-  // var profilePic;
-  HomeScreen({super.key, });
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+  final logic = Get.find<HomeScreenLogic>();
+  final state = Get.find<HomeScreenLogic>().state;
   var generatedColor = Random().nextInt(Colors.primaries.length);
-  bool isMe = true;
-
-  DataController dataController = Get.put(DataController());
-  final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
-  @override
-  void initState() {
-    super.initState();
-    dataController.getUserData();
-    // widget.profilePic;
-  }
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -60,21 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: context.theme.cardColor,
                           borderRadius: BorderRadius.circular(50),
                         ),
-                        // child: widget.profilePic != null
-                        //     ? ClipOval(
-                        //         child: Image.file(
-                        //           widget.profilePic!,
-                        //           fit: BoxFit.cover,
-                        //         ),
-                        //       )
-                        //     :
-                       child: ClipOval(
-                                child: Image(
-                                  image: NetworkImage(
-                                    'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg',
-                                  ),
-                                ),
-                              ),
+                        child: ClipOval(
+                          child: Image(
+                            image: NetworkImage(
+                              'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg',
+                            ),
+                          ),
+                        ),
                       ),
                       SizedBox(
                         width: 30,
@@ -171,168 +148,160 @@ class _HomeScreenState extends State<HomeScreen> {
                               height: 15,
                             ),
                             Flexible(
-                                child: Obx(
-                              () => dataController.isDataLoading.value
-                                  ? Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : ListView.builder(
-                                      itemCount:
-                                          dataController.user!.users.length,
-                                      itemBuilder: (ctx, int index) {
-                                        var names = dataController
-                                            .user?.users[index].firstName;
-                                        var image = dataController
-                                            .user?.users[index].image;
-                                        var isMe1 = isMe;
-                                        return Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 10),
-                                          child: Column(
-                                            children: [
-                                              GestureDetector(
-                                                onTap: () {
-                                                  Get.toNamed(
-                                                      RoutesClass.getChat(),
-                                                      arguments: [
-                                                        names,
-                                                        image,
-                                                        isMe1
-                                                      ]);
-                                                },
-                                                child: Container(
-                                                  height: 70,
-                                                  width: Get.width - 30,
-                                                  decoration: BoxDecoration(
-                                                      color: context
-                                                          .theme.cardColor,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 10.0,
-                                                            right: 10,
-                                                            top: 10,
-                                                            bottom: 10),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
+                                child: ListView.builder(
+                                  itemCount: logic.user.length,
+                                  itemBuilder: (ctx, int index) {
+                                    var names = logic.user[index];
+                                    var image =
+                                        'https://www.goodmorningimagesdownload.com/wp-content/uploads/2021/12/Best-Quality-Profile-Images-Pic-Download-2023.jpg';
+                                    var isMe1 = logic.isMe;
+                                    return Padding(
+                                      padding:
+                                      const EdgeInsets.only(bottom: 10),
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Get.toNamed(
+                                                  RoutesClass.getChat(),
+                                                  arguments: [
+                                                    names,
+                                                    image,
+                                                    isMe1
+                                                  ]);
+                                            },
+                                            child: Container(
+                                              height: 70,
+                                              width: Get.width - 30,
+                                              decoration: BoxDecoration(
+                                                  color: context
+                                                      .theme.cardColor,
+                                                  borderRadius:
+                                                  BorderRadius.circular(
+                                                      20)),
+                                              child: Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    left: 10.0,
+                                                    right: 10,
+                                                    top: 10,
+                                                    bottom: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                                  children: [
+                                                    Row(
                                                       children: [
-                                                        Row(
-                                                          children: [
-                                                            Container(
-                                                              height: 50,
-                                                              width: 50,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                gradient:
-                                                                    LinearGradient(
-                                                                  colors: [
-                                                                    Colors.primaries[Random().nextInt(Colors
-                                                                        .primaries
-                                                                        .length)],
-                                                                    Colors.primaries[Random().nextInt(Colors
-                                                                        .primaries
-                                                                        .length)],
-                                                                  ],
-                                                                ),
-                                                                image:
-                                                                    DecorationImage(
-                                                                  image:
-                                                                      NetworkImage(
-                                                                          image!),
-                                                                ),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            100),
-                                                              ),
-                                                            ),
-                                                            SizedBox(
-                                                              width: 10,
-                                                            ),
-                                                            Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Text(
-                                                                  names!,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    fontSize:
-                                                                        17,
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  'Meet',
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontSize:
-                                                                        15,
-                                                                  ),
-                                                                ),
+                                                        Container(
+                                                          height: 50,
+                                                          width: 50,
+                                                          decoration:
+                                                          BoxDecoration(
+                                                            gradient:
+                                                            LinearGradient(
+                                                              colors: [
+                                                                Colors.primaries[Random().nextInt(Colors
+                                                                    .primaries
+                                                                    .length)],
+                                                                Colors.primaries[Random().nextInt(Colors
+                                                                    .primaries
+                                                                    .length)],
                                                               ],
                                                             ),
-                                                          ],
+                                                            image:
+                                                            DecorationImage(
+                                                              image:
+                                                              NetworkImage(
+                                                                  image!),
+                                                            ),
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                100),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 10,
                                                         ),
                                                         Column(
                                                           crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .end,
+                                                          CrossAxisAlignment
+                                                              .start,
                                                           children: [
                                                             Text(
-                                                              DateFormat(
-                                                                      'hh:mm a')
-                                                                  .format(DateTime
-                                                                      .now()),
-                                                              style: TextStyle(
+                                                              names!,
+                                                              style:
+                                                              TextStyle(
                                                                 fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 17,
+                                                                FontWeight
+                                                                    .bold,
+                                                                fontSize:
+                                                                17,
                                                               ),
                                                             ),
-                                                            Container(
-                                                              height: 20,
-                                                              width: 20,
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              50),
-                                                                  color: Colors
-                                                                      .red),
-                                                              child: Center(
-                                                                child: Text(
-                                                                  '1',
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                ),
+                                                            Text(
+                                                              'Meet',
+                                                              style:
+                                                              TextStyle(
+                                                                color: Colors
+                                                                    .grey,
+                                                                fontSize:
+                                                                15,
                                                               ),
-                                                            )
+                                                            ),
                                                           ],
                                                         ),
                                                       ],
                                                     ),
-                                                  ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .end,
+                                                      children: [
+                                                        Text(
+                                                          DateFormat(
+                                                              'hh:mm a')
+                                                              .format(DateTime
+                                                              .now()),
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                            FontWeight
+                                                                .bold,
+                                                            fontSize: 17,
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          height: 20,
+                                                          width: 20,
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                  50),
+                                                              color: Colors
+                                                                  .red),
+                                                          child: Center(
+                                                            child: Text(
+                                                              '1',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .white),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        );
-                                      },
-                                    ),
-                            )),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),),
                           ],
                         ),
 
