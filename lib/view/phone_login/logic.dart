@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../route/routes.dart';
 import 'state.dart';
 
@@ -37,11 +36,10 @@ class PhoneLoginLogic extends GetxController {
     final currentText = phoneController.text;
     if (key == -1) {
       if (currentText.isNotEmpty) {
-        phoneController.text =
-            currentText.substring(0, currentText.length - 1);
+        phoneController.text = currentText.substring(0, currentText.length - 1);
       }
     } else {
-    phoneController.text = currentText + key.toString();
+      phoneController.text = currentText + key.toString();
     }
   }
 }

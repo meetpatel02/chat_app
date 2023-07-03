@@ -4,4 +4,5 @@ import 'state.dart';
 
 class LoginLogic extends GetxController {
   final LoginState state = LoginState();
+  bool isFinished = false;
 }

@@ -1,12 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'state.dart';
 
 class ChatScreenLogic extends GetxController {
@@ -54,7 +52,7 @@ class ChatScreenLogic extends GetxController {
   getWallpaper() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     var data = prefs.getString('wallpaper');
-    wallpaper = data!;
+    wallpaper = data??'';
     update();
   }
 
