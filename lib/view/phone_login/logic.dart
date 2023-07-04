@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,8 +12,16 @@ class PhoneLoginLogic extends GetxController {
   final phoneController = TextEditingController();
   FocusNode focusNode = FocusNode();
   bool keyBoardShow = false;
+  var countryCode = "+91";
 
-  void checkPhoneNo() {
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+    // phoneController.text = "+91";
+  }
+
+  void checkPhoneNo()async {
     var userPhoneNumber = phoneController.text;
     if (phoneController.text.trim().isEmpty) {
       Get.snackbar('Error', 'Please Enter your number',
@@ -27,7 +37,19 @@ class PhoneLoginLogic extends GetxController {
       // print(phoneController.text);
       keyBoardShow = false;
       // phoneController.clear();
-      Get.toNamed(RoutesClass.getOtpScreen(), arguments: [userPhoneNumber]);
+      await FirebaseAuth.instance.verifyPhoneNumber(
+        phoneNumber: countryCode + phoneController.text,
+        verificationCompleted: (phoneAuthCredential) {
+
+      }, verificationFailed: (error) {
+        Get.snackbar('Error', error.message.toString());
+      }, codeSent: (String? verificationId,int? token) {
+          var id = verificationId.toString();
+          print('id123:$verificationId');
+        Get.toNamed(RoutesClass.getOtpScreen(), arguments: [userPhoneNumber,id]);
+      }, codeAutoRetrievalTimeout: (e) {
+        Get.snackbar('TimeOut', e.toString());
+      },);
       update();
     }
   }

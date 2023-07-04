@@ -11,7 +11,6 @@ class OtpPage extends StatelessWidget {
   final logic = Get.find<OtpLogic>();
   final state = Get.find<OtpLogic>().state;
 
-  // var id = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +95,7 @@ class OtpPage extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
+                                logic.update();
                                 print("Resend the code to the user");
                               },
                               child: Text(

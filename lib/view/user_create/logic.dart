@@ -17,7 +17,7 @@ class UserCreateLogic extends GetxController {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    phoneController.text = number[0].toString().replaceAll('[', '').replaceAll(']', '');
+    phoneController.text = number[0];
     update();
   }
   void checkName(){
