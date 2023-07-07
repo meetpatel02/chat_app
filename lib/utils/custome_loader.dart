@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 
 BuildContext? _progressContext;
 
@@ -25,9 +26,9 @@ void showProgressbarDialog(BuildContext context, {Color? loaderColor}) {
                   Center(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
-                      child: SpinKitCircle(
-                        size: 50,
-                        color: Color(0XFF244da0),
+                      child: SpinKitPouringHourGlassRefined(
+                        size: 60,
+                        color: Colors.yellow,
                       ),
                     ),
                   ),

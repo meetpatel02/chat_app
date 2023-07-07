@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:chat_app/Model/messageModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -11,8 +13,10 @@ class ChatScreenLogic extends GetxController {
   final ChatScreenState state = ChatScreenState();
   bool isMe = false;
   var nameData = Get.arguments;
-
+  var userId = '';
   TextEditingController messageController = TextEditingController();
+  final addUser = FirebaseFirestore.instance.collection('messages');
+  final ref = FirebaseFirestore.instance.collection('messages').doc();
   List messages = [
     'Hello',
     'Hi there',
@@ -30,17 +34,18 @@ class ChatScreenLogic extends GetxController {
   KeyboardVisibilityController _keyboardVisibilityController =
       KeyboardVisibilityController();
   bool _isKeyboardVisible = false;
-
+  MessageModel messageModel = MessageModel();
 
   @override
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    userId = nameData[3];
+    print(userId);
     getWallpaper();
     wallpaper;
     _keyboardVisibilityController.onChange.listen((bool visible) {
       _isKeyboardVisible = visible;
-
       if (!visible) {
         // Scroll the list when the keyboard closes
         scrollToBottom();
@@ -48,6 +53,12 @@ class ChatScreenLogic extends GetxController {
     });
     update();
   }
+
+  void storeMessage(BuildContext context, MessageModel messageModel)async{
+      await ref.set(messageModel.toMap());
+      update();
+  }
+
 
   getWallpaper() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();

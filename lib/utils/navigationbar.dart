@@ -18,14 +18,14 @@ class NavigationBar extends StatefulWidget {
 class _NavigationBarState extends State<NavigationBar> {
   int _selectedIndex = 0;
   late List screen = [];
-  var username = Get.arguments;
-  // final homeLogic = Get.find<HomeScreenLogic>();
+  HomeScreenLogic logic = Get.put(HomeScreenLogic());
+
   @override
   void initState() {
     super.initState();
-    Get.put(HomeScreenLogic());
     Get.put(CallScreenLogic());
     Get.put(ProfileScreenLogic());
+
     screen = [
       HomeScreenPage(),
       CallScreenPage(),

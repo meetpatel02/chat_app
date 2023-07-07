@@ -97,7 +97,7 @@ class PhoneLoginPage extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        logic.checkPhoneNo();
+                        logic.checkPhoneNo(context);
                       },
                       child:
                       Container(

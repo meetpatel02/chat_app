@@ -1,10 +1,12 @@
 import 'dart:math';
 
 import 'package:bouncing_button/bouncing_button.dart';
+import 'package:chat_app/Model/messageModel.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/custome_button.dart';
 import 'logic.dart';
@@ -74,7 +76,9 @@ class ChatScreenPage extends StatelessWidget {
             width: Get.width,
             decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage(logic.wallpaper != '' ? logic.wallpaper.toString() : 'assets/images/b1.jpg'),
+                  image: AssetImage(logic.wallpaper != ''
+                      ? logic.wallpaper.toString()
+                      : 'assets/images/b1.jpg'),
                   fit: BoxFit.cover),
             ),
             child: Column(
@@ -170,10 +174,24 @@ class ChatScreenPage extends StatelessWidget {
                               Flexible(
                                   child: TextField(
                                 controller: logic.messageController,
-                                onSubmitted: (var text) {
+                                onSubmitted: (var text) async {
+                                  SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
                                   if (logic.messageController.text
                                       .trim()
                                       .isNotEmpty) {
+                                    ///Message Store in to Firebase
+                                    logic.storeMessage(
+                                        context,
+                                        MessageModel(
+                                            messageId: logic.ref.id +
+                                                logic.nameData[3],
+                                            receiverId: logic.userId,
+                                            timestamp: DateTime.now(),
+                                            message: text,
+                                            senderId:
+                                                prefs.getString('userId')));
+
                                     logic.messages.add(text);
                                     logic.scrollToBottom();
                                   }

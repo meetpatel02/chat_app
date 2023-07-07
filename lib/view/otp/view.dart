@@ -95,7 +95,6 @@ class OtpPage extends StatelessWidget {
                             ),
                             GestureDetector(
                               onTap: () {
-                                logic.update();
                                 print("Resend the code to the user");
                               },
                               child: Text(
@@ -124,7 +123,7 @@ class OtpPage extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () {
                             // var userPhoneNumber = id[0];
-                            logic.checkOtp();
+                            logic.checkOtp(context);
                           },
                           child: Container(
                             decoration: BoxDecoration(
