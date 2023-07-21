@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:chat_app/Model/user_profile_model.dart';
+import 'package:chat_app/constants.dart';
 import 'package:chat_app/view/splash/logic.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,8 +24,7 @@ class UserCreateLogic extends GetxController {
   final phoneController = TextEditingController();
   final nameController = TextEditingController();
   String path = '';
-  final addUser = FirebaseFirestore.instance.collection('userProfile');
-  final docId = FirebaseFirestore.instance.collection('userProfile').doc();
+  final docId = FirebaseFirestore.instance.collection('userProfile').doc(Constants.userId);
   List profilePicUrl = [];
   final logic = Get.find<SplashLogic>();
   ProfileModel profileModel = ProfileModel();
@@ -54,7 +54,7 @@ class UserCreateLogic extends GetxController {
       createUserProfile(
           context,
           ProfileModel(
-            id: docId.id,
+            id: Constants.userId,
             name: nameController.text.trim().toString(),
             profilePic: profilePicUrl.last
                 .toString()
@@ -62,6 +62,8 @@ class UserCreateLogic extends GetxController {
                 .replaceAll(']', ''),
             phone: phoneController.text,
           ));
+      Constants.userName = nameController.text.trim().toString();
+      print(Constants.userName);
     }
     update();
   }
@@ -116,15 +118,6 @@ class UserCreateLogic extends GetxController {
   }
 
   createUserProfile(context, ProfileModel profileModel) async {
-    var id = docId.id;
-    var name = nameController.text.trim().toString();
-    var profilePic = profilePicUrl.last
-        .toString()
-        .replaceAll('[', '')
-        .replaceAll(']', '');
-    var phone = phoneController.text;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // await addUser.add(profileModel.toMap());
     await docId.set(profileModel.toMap());
     getUserData();
     Get.toNamed(RoutesClass.getPrivacyPolicy());

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../route/routes.dart';
-import '../../screen/keyboard_custome.dart';
+import '../../utils/keyboard_custome.dart';
 import 'logic.dart';
 
 class OtpPage extends StatelessWidget {

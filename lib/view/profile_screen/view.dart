@@ -13,9 +13,9 @@ import 'dart:math' as math;
 
 class ProfileScreenPage extends StatelessWidget {
   ProfileScreenPage({Key? key}) : super(key: key);
-  final logic = Get.put(ProfileScreenLogic());
+  // final logic = Get.put(ProfileScreenLogic());
 
-  // final logic = Get.find<ProfileScreenLogic>();
+  final logic = Get.find<ProfileScreenLogic>();
   final state = Get.find<ProfileScreenLogic>().state;
   final homeLogic = Get.find<HomeScreenLogic>();
   final splashLogic = Get.find<SplashLogic>();

@@ -10,6 +10,7 @@ class ProfileScreenLogic extends GetxController {
   var name = '';
   var profilePic = '';
   var phoneNo = '';
+  var isOnline = '';
 
   @override
   void onInit() {

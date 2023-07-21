@@ -1,3 +1,4 @@
+import 'package:chat_app/constants.dart';
 import 'package:chat_app/utils/custome_loader.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,9 @@ class OtpLogic extends GetxController {
       final otpCheck = PhoneAuthProvider.credential(
           verificationId: phoneNo[1], smsCode: code);
       try {
-        await FirebaseAuth.instance.signInWithCredential(otpCheck);
+        var result = await FirebaseAuth.instance.signInWithCredential(otpCheck);
+        Constants.userId = result.user?.uid ?? '';
+        print(Constants.userId);
         hideProgressDialog();
         Get.toNamed(RoutesClass.getUserCreate(), arguments: [phoneNo[0]]);
       } catch (e) {

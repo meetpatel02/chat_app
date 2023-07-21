@@ -15,7 +15,7 @@ import 'package:chat_app/view/user_create/binding.dart';
 import 'package:chat_app/view/user_create/view.dart';
 import 'package:get/get.dart';
 
-import '../screen/chatScreen_bgchange.dart';
+import '../utils/chatScreen_bgchange.dart';
 import '../utils/navigationbar.dart';
 import '../view/splash/binding.dart';
 

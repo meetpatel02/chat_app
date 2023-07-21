@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:chat_app/constants.dart';
 import 'package:chat_app/service/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/animation.dart';
@@ -68,10 +69,11 @@ class SplashLogic extends GetxController with SingleGetTickerProviderMixin {
     name = profileModel.name.toString();
     profilePic = profileModel.profilePic.toString();
     phoneNo = profileModel.phone.toString();
-    id = profileModel.id.toString();
-    prefs.setString('userId', id);
+    Constants.userId = profileModel.id.toString();
+    Constants.userName = profileModel.name.toString();
+    prefs.setString('userId', Constants.userId);
     print(prefs.getString('userId'));
+    print(Constants.userName);
     update();
   }
-
 }
