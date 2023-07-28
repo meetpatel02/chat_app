@@ -262,10 +262,12 @@ class UserCreatePage extends StatelessWidget {
                 PermissionStatus storage = await Permission.camera.request();
                 if (storage == PermissionStatus.granted) {
                   logic.getCameraImage(context);
-                } else if (storage == PermissionStatus.denied) {
+                }
+                else if (storage == PermissionStatus.denied) {
                   ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text('This permission is required')));
-                } else if (storage == PermissionStatus.permanentlyDenied) {
+                }
+                else if (storage == PermissionStatus.permanentlyDenied) {
                   Navigator.pop(context);
                   showDialog<String>(
                     context: context,

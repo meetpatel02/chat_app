@@ -1,7 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:typed_data';
-
 import 'package:chat_app/Model/typingModel.dart';
 import 'package:chat_app/Model/user_profile_model.dart';
 import 'package:chat_app/constants.dart';
@@ -709,7 +707,8 @@ class HomeScreenPage extends StatelessWidget {
                                                 var phoneno =
                                                     myData.phone.toString();
                                                 var id = myData.id.toString();
-                                                var loginUserId = Constants.userId;
+                                                var loginUserId =
+                                                    Constants.userId;
                                                 return Padding(
                                                   padding:
                                                       const EdgeInsets.only(
@@ -718,11 +717,17 @@ class HomeScreenPage extends StatelessWidget {
                                                     children: [
                                                       GestureDetector(
                                                         onTap: () async {
-                                                          api.userTyping(Constants.userId, id,Typing(
-                                                            senderId: Constants.userId,
-                                                            receiverId: id,
-                                                            isTyping: false
-                                                          ));
+                                                          api.userTyping(
+                                                              Constants.userId,
+                                                              id,
+                                                              Typing(
+                                                                  senderId:
+                                                                      Constants
+                                                                          .userId,
+                                                                  receiverId:
+                                                                      id,
+                                                                  isTyping:
+                                                                      false));
                                                           Get.toNamed(
                                                               RoutesClass
                                                                   .getChat(),
@@ -754,9 +759,16 @@ class HomeScreenPage extends StatelessWidget {
                                                                     bottom: 5),
                                                             child:
                                                                 StreamBuilder(
-                                                                    stream: api.getLastMessage(id, Constants.userId.toString()),
-                                                                    builder: (context, snapshot) {
-                                                                      if (snapshot.connectionState ==
+                                                                    stream: api.getLastMessage(
+                                                                        id,
+                                                                        Constants
+                                                                            .userId
+                                                                            .toString()),
+                                                                    builder:
+                                                                        (context,
+                                                                            snapshot) {
+                                                                      if (snapshot
+                                                                              .connectionState ==
                                                                           ConnectionState
                                                                               .waiting) {
                                                                         return const Text(
@@ -803,7 +815,6 @@ class HomeScreenPage extends StatelessWidget {
                                                                                               ),
                                                                                             )
                                                                                           : const Text(''),
-
                                                                                     ],
                                                                                   ),
                                                                                   snapshot.data!.docs.isNotEmpty
@@ -822,7 +833,8 @@ class HomeScreenPage extends StatelessWidget {
                                                                                             const SizedBox(
                                                                                               width: 5,
                                                                                             ),
-                                                                                            Text(snapshot.data?.docs.last['message'].toString() ?? '')
+                                                                                            snapshot.data!.docs.last['message'].toString().isNotEmpty?
+                                                                                            Container(width: Get.width-210,child: Text(snapshot.data?.docs.last['message'].toString() ?? '',overflow: TextOverflow.ellipsis,)):Icon(Icons.mic,size: 22,)
                                                                                           ],
                                                                                         )
                                                                                       : const Text('')
@@ -1479,5 +1491,4 @@ class HomeScreenPage extends StatelessWidget {
             ? 'Yesterday'
             : DateFormat('MM/dd/yyyy').format(dateTime);
   }
-
 }

@@ -6,6 +6,7 @@ class MessageModel {
   String? message;
   Timestamp? timestamp;
   bool? read;
+  String? audio;
 
   MessageModel({
     this.senderId,
@@ -13,6 +14,7 @@ class MessageModel {
     this.message,
     this.timestamp,
     this.read,
+    this.audio,
   });
 
 
@@ -24,6 +26,7 @@ class MessageModel {
       'message': message,
       'timestamp': timestamp,
       'read': read,
+      'audio':audio
     };
 }
 
@@ -35,6 +38,7 @@ class MessageModel {
       receiverId: data['receiverId'] ?? '',
       timestamp: data['timestamp'] ?? '',
       read: data['read'] ?? '',
+      audio: data['audio']??''
     );
   }
 

@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>867925220284-0e1adclh9es2a4gabpkninjs8se4st8q.apps.googleusercontent.com</string>
+	<string>14247928932-3qfudq7pchvcl9hqnt74sntp6uvvra76.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.867925220284-0e1adclh9es2a4gabpkninjs8se4st8q</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>867925220284-d2bt8g7usfbqtflhg1v1e6clk3osueou.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.14247928932-3qfudq7pchvcl9hqnt74sntp6uvvra76</string>
 	<key>API_KEY</key>
-	<string>AIzaSyD8rGHrQ7Hdg1Jz9jfegzm0w4-C7gBzdJY</string>
+	<string>AIzaSyBrElS-97jix6j6B5czVHyDYY7mXJRMZ8c</string>
 	<key>GCM_SENDER_ID</key>
-	<string>867925220284</string>
+	<string>14247928932</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.meetpatel.chatApp</string>
 	<key>PROJECT_ID</key>
-	<string>chatapp-95310</string>
+	<string>chat-app-7394c</string>
 	<key>STORAGE_BUCKET</key>
-	<string>chatapp-95310.appspot.com</string>
+	<string>chat-app-7394c.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:867925220284:ios:88b42ed544f57e88a729b9</string>
+	<string>1:14247928932:ios:f9cd33b3aa79fa96de6b71</string>
 </dict>
 </plist>

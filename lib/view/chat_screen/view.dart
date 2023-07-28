@@ -1,9 +1,10 @@
+// ignore_for_file: prefer_const_constructors, avoid_function_literals_in_foreach_calls
+
 import 'dart:async';
 import 'dart:math';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:bouncing_button/bouncing_button.dart';
 import 'package:chat_app/Model/messageModel.dart';
-import 'package:chat_app/Model/typingModel.dart';
 import 'package:chat_app/constants.dart';
 import 'package:chat_app/service/firebase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,7 +14,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:shimmer/shimmer.dart';
 import '../../utils/custome_button.dart';
 import 'logic.dart';
 
@@ -45,18 +46,20 @@ class ChatScreenPage extends StatelessWidget {
                   SizedBox(
                     width: 10,
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(logic.nameData[0].toString()),
-                      Visibility(
-                          visible: logic.isTyping!,
-                          child: Text(
-                            'typing...',
-                            style: TextStyle(fontSize: 13),
-                          )),
-                    ],
+                  Flexible(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(logic.nameData[0].toString(),overflow: TextOverflow.ellipsis,style: TextStyle(fontSize: 20),),
+                        Visibility(
+                            visible: logic.isTyping!,
+                            child: Text(
+                              'typing...',
+                              style: TextStyle(fontSize: 13),
+                            )),
+                      ],
+                    ),
                   )
                 ],
               ),
@@ -93,398 +96,555 @@ class ChatScreenPage extends StatelessWidget {
                     fit: BoxFit.cover),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Expanded(
                       child: ListView.builder(
-                        reverse: true,
-                        controller: logic.scrollController,
-                        itemCount: logic.messages?.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          MessageModel message = logic.messages![index];
-                          Timestamp? timestamp = message.timestamp;
-                          String formattedTime =
+                    reverse: true,
+                    controller: logic.scrollController,
+                    itemCount: logic.messages?.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      MessageModel message = logic.messages![index];
+                      Timestamp? timestamp = message.timestamp;
+                      String formattedTime =
                           DateFormat('hh:mm a').format(timestamp!.toDate());
-                          bool? read = message.read;
-
-                          if (read == false) {
-                            api.readMessage(Constants.userId, logic.nameData[2]);
-                          }
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment:
+                      bool? read = message.read;
+                      if (read == false) {
+                        api.readMessage(Constants.userId, logic.nameData[2]);
+                      }
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment:
                             message.senderId == logic.nameData[3]
                                 ? CrossAxisAlignment.end
                                 : CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 10, right: 10, top: 5),
-                                child: Wrap(
-                                  direction: Axis.vertical,
-                                  crossAxisAlignment:
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 5),
+                            child: Wrap(
+                              direction: Axis.vertical,
+                              crossAxisAlignment:
                                   message.senderId == logic.nameData[3]
                                       ? WrapCrossAlignment.end
                                       : WrapCrossAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          left: 15, right: 15, top: 5, bottom: 5),
-                                      // height: 50,
-                                      decoration: message.senderId ==
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      left: 15, right: 15, top: 5, bottom: 5),
+                                  // height: 50,
+                                  decoration: message.senderId ==
                                           logic.nameData[3]
-                                          ? BoxDecoration(
-                                        color: context.theme.dividerColor,
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(20),
-                                          topLeft: Radius.circular(20),
-                                          topRight: Radius.circular(20),
-                                        ),
-                                      )
-                                          : BoxDecoration(
-                                        color: context.theme.focusColor,
-                                        borderRadius: BorderRadius.only(
+                                      ? BoxDecoration(
+                                          color: context.theme.dividerColor,
+                                          borderRadius: BorderRadius.only(
+                                            bottomLeft: Radius.circular(20),
                                             topLeft: Radius.circular(20),
                                             topRight: Radius.circular(20),
-                                            bottomRight: Radius.circular(20)),
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            constraints: BoxConstraints(
-                                              maxWidth: Get.width * 0.6,
-                                            ),
-                                            child: Column(
-                                              crossAxisAlignment:
+                                          ),
+                                        )
+                                      : BoxDecoration(
+                                          color: context.theme.focusColor,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(20),
+                                              topRight: Radius.circular(20),
+                                              bottomRight: Radius.circular(20)),
+                                        ),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        constraints: BoxConstraints(
+                                          maxWidth: Get.width * 0.6,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
                                               message.senderId ==
-                                                  logic.nameData[3]
+                                                      logic.nameData[3]
                                                   ? CrossAxisAlignment.end
                                                   : CrossAxisAlignment.start,
+                                          children: [
+                                            message.audio!.isEmpty
+                                                ? Text(
+                                                    message.message.toString(),
+                                                    softWrap: true,
+                                                    style: TextStyle(
+                                                        color: Colors.black),
+                                                  )
+                                                : GestureDetector(
+                                                    onTap: () async {
+                                                      // logic.PlayAudio(message.audio.toString());
+                                                      if (logic.isPlaying) {
+                                                        await logic.audio
+                                                            .pause();
+                                                        logic.isPlaying = false;
+                                                        logic.update();
+                                                      } else {
+                                                        await logic.audio
+                                                            .play(UrlSource(
+                                                                message.audio
+                                                                    .toString()))
+                                                            .then((value) {
+                                                          logic.isPlaying =
+                                                              true;
+                                                          logic.update();
+                                                        });
+                                                      }
+                                                    },
+                                                    child: Icon(logic.isPlaying
+                                                        ? Icons.pause
+                                                        : Icons.play_arrow)),
+                                            Wrap(
+                                              crossAxisAlignment:
+                                                  WrapCrossAlignment.center,
                                               children: [
                                                 Text(
-                                                  message.message.toString(),
+                                                  formattedTime,
                                                   softWrap: true,
                                                   style: TextStyle(
-                                                      color: Colors.black),
+                                                      color: Colors.black,
+                                                      fontSize: 11),
                                                 ),
-                                                Wrap(
-                                                  crossAxisAlignment:
-                                                  WrapCrossAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      formattedTime,
-                                                      softWrap: true,
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 11),
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5,
-                                                    ),
-                                                    message.senderId ==
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                message.senderId ==
                                                         logic.nameData[3]
-                                                        ? read == false
+                                                    ? read == false
                                                         ? Icon(
-                                                      Icons.done,
-                                                      size: 19,
-                                                    )
+                                                            Icons.done,
+                                                            size: 19,
+                                                          )
                                                         : Icon(
-                                                      Icons.done_all,
-                                                      size: 19,
-                                                      color: Color(
-                                                          0xFF024DFC),
-                                                    )
-                                                        : Text('')
-                                                  ],
-                                                ),
+                                                            Icons.done_all,
+                                                            size: 19,
+                                                            color: Color(
+                                                                0xFF024DFC),
+                                                          )
+                                                    : Text('')
                                               ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        },
-                      )
-
-                    // StreamBuilder(
-                    //   stream:
-                    //       api.getMessage(logic.nameData[2], logic.nameData[3]),
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasError) {
-                    //       return Text('Error');
-                    //     }
-                    //     if (snapshot.connectionState == ConnectionState.waiting) {
-                    //       return Center(child: CircularProgressIndicator());
-                    //     }
-                    //     return ListView(
-                    //       reverse: true,
-                    //       children: snapshot.data!.docs
-                    //           .map((e) => buildMessage(
-                    //               e,
-                    //               context.theme.dividerColor,
-                    //               context.theme.focusColor))
-                    //           .toList(),
-                    //     );
-                    //   },
-                    // ),
-                  ),
-                  TypingIndicator(
-                    showIndicator: logic.isTyping!,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        left: 5.0, right: 5, top: 10, bottom: 20),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 50,
-                          width: Get.width - 70,
-                          decoration: BoxDecoration(
-                              color: context.theme.cardColor,
-                              borderRadius: BorderRadius.circular(50)),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 10.0, right: 10),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  FontAwesomeIcons.microphone,
-                                  color: context.theme.indicatorColor,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Flexible(
-                                    child: TextField(
-                                  controller: logic.messageController,
-                                  onChanged: (val) async {
-                                    if (logic.messageController.text.length >= 3) {
-                                      // print('true');
-                                      List<String>? ids = [
-                                        Constants.userId,
-                                        logic.nameData[2].toString()
-                                      ];
-                                      ids.sort();
-                                      String chatRoomId = ids.join("_");
-
-                                      QuerySnapshot<Map<String, dynamic>> ref =
-                                          await FirebaseFirestore.instance
-                                              .collection('typing')
-                                              .doc(chatRoomId)
-                                              .collection('typing')
-                                              .where('senderId',
-                                                  isEqualTo: Constants.userId)
-                                              .where('isTyping',
-                                                  isEqualTo: false)
-                                              .get();
-                                      ref.docs.forEach((element) {
-                                        element.reference
-                                            .update({'isTyping': true});
-                                      });
-
-                                      Future.delayed(Duration(seconds: 3),
-                                          () async {
-                                        // print('stop typing');
-                                        List<String>? ids = [
-                                          Constants.userId,
-                                          logic.nameData[2].toString()
-                                        ];
-                                        ids.sort();
-                                        String chatRoomId = ids.join("_");
-
-                                        QuerySnapshot<Map<String, dynamic>>
-                                            ref = await FirebaseFirestore
-                                                .instance
-                                                .collection('typing')
-                                                .doc(chatRoomId)
-                                                .collection('typing')
-                                                .where('senderId',
-                                                    isEqualTo: Constants.userId)
-                                                .where('isTyping',
-                                                    isEqualTo: true)
-                                                .get();
-                                        ref.docs.forEach((element) {
-                                          element.reference
-                                              .update({'isTyping': false});
-                                        });
-                                      });
-                                      // api.typing(Constants.userId, logic.nameData[2].toString());
-                                    }
-                                  },
-                                  onSubmitted: (var text) async {
-                                    SharedPreferences prefs =
-                                        await SharedPreferences.getInstance();
-                                    if (logic.messageController.text
-                                        .trim()
-                                        .isNotEmpty) {
-                                      ///Message Store in to Firebase
-                                      logic.messages?.clear();
-                                      logic.scrollController.animateTo(
-                                        0.0,
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.easeOut,
-                                      );
-                                      logic.sendMessage(
-                                        MessageModel(
-                                            senderId: logic.nameData[3],
-                                            receiverId: logic.nameData[2],
-                                            message:
-                                                logic.messageController.text,
-                                            read: false,
-                                            timestamp: Timestamp.now()),
-                                      );
-                                    }
-                                    logic.messageController.clear();
-                                  },
-                                  minLines: 1,
-                                  maxLines: null,
-                                  keyboardType: TextInputType.multiline,
-                                  textInputAction: TextInputAction.send,
-                                  decoration: InputDecoration.collapsed(
-                                    border: InputBorder.none,
-                                    hintText: 'Type Here...',
-                                    hintStyle: TextStyle(
-                                        color: context.theme.indicatorColor),
-                                  ),
-                                )),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                GestureDetector(
-                                  onTap: () async {
-                                    PermissionStatus storage =
-                                        await Permission.storage.request();
-                                    if (storage == PermissionStatus.granted) {
-                                      logic.pickImage();
-                                    } else if (storage ==
-                                        PermissionStatus.denied) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  'This permission is required')));
-                                    } else if (storage ==
-                                        PermissionStatus.permanentlyDenied) {
-                                      showDialog<String>(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            AlertDialog(
-                                          backgroundColor: Color(0XFFc4c4c4),
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          title: const Text(
-                                              'Chat App does not have access to your photos.To enable access,tap Setting and turn on Photos.'),
-                                          actions: <Widget>[
-                                            Padding(
-                                              padding: const EdgeInsets.only(
-                                                  bottom: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.end,
-                                                children: [
-                                                  SizedBox(
-                                                    width: 100,
-                                                    child: Button(
-                                                      child: Text(
-                                                        'Cancel',
-                                                        style: TextStyle(
-                                                          color: Colors.blue,
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                        ),
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      color: Color(0XFFc4c4c4),
-                                                    ),
-                                                  ),
-                                                  SizedBox(
-                                                    width: 100,
-                                                    child: Button(
-                                                      child: Text('Setting',
-                                                          style: TextStyle(
-                                                            color: Colors.blue,
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.w400,
-                                                          )),
-                                                      onPressed: () {
-                                                        openAppSettings();
-                                                        Get.back();
-                                                      },
-                                                      color: Color(0XFFc4c4c4),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
                                             ),
                                           ],
                                         ),
-                                      );
-                                      return;
-                                    }
-                                    // Get.back();
-                                  },
-                                  child: Icon(
-                                    Icons.image_outlined,
-                                    color: context.theme.indicatorColor,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Icon(
-                                  Icons.emoji_emotions_outlined,
-                                  color: context.theme.indicatorColor,
                                 ),
                               ],
                             ),
                           ),
-                        ),
+                        ],
+                      );
+                    },
+                  )),
+                  TypingIndicator(
+                    showIndicator: logic.isTyping!,
+                  ),
+                  logic.showLock == true?
+                  Padding(
+                    padding: const EdgeInsets.only(right: 25),
+                    child: Column(
+                      children: [
+                        Icon(Icons.lock_outline,color: Colors.white,),
+                        Icon(Icons.keyboard_arrow_up,color: Colors.white,),
+                      ],
+                    ),
+                  ):Container(),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                        left: 6.0, right: 5, top: 10, bottom: 20),
+                    child: Row(
+                      children: [
+                        !logic.showTextField
+                            ? Container(
+                                height: 50,
+                                width: Get.width - 70,
+                                decoration: BoxDecoration(
+                                    color: context.theme.cardColor,
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, right: 10),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Flexible(
+                                          child: TextField(
+                                        controller: logic.messageController,
+                                        onChanged: (val) async {
+                                          if (logic.messageController.text
+                                              .isNotEmpty) {
+                                            // print('true');
+                                            List<String>? ids = [
+                                              Constants.userId,
+                                              logic.nameData[2].toString()
+                                            ];
+                                            ids.sort();
+                                            String chatRoomId = ids.join("_");
+                                            QuerySnapshot<Map<String, dynamic>>
+                                                ref = await FirebaseFirestore
+                                                    .instance
+                                                    .collection('typing')
+                                                    .doc(chatRoomId)
+                                                    .collection('typing')
+                                                    .where('senderId',
+                                                        isEqualTo:
+                                                            Constants.userId)
+                                                    .where('isTyping',
+                                                        isEqualTo: false)
+                                                    .get();
+                                            ref.docs.forEach((element) {
+                                              element.reference
+                                                  .update({'isTyping': true});
+                                            });
+
+                                            Future.delayed(Duration(seconds: 3),
+                                                () async {
+                                              // print('stop typing');
+                                              List<String>? ids = [
+                                                Constants.userId,
+                                                logic.nameData[2].toString()
+                                              ];
+                                              ids.sort();
+                                              String chatRoomId = ids.join("_");
+
+                                              QuerySnapshot<
+                                                      Map<String, dynamic>>
+                                                  ref = await FirebaseFirestore
+                                                      .instance
+                                                      .collection('typing')
+                                                      .doc(chatRoomId)
+                                                      .collection('typing')
+                                                      .where('senderId',
+                                                          isEqualTo:
+                                                              Constants.userId)
+                                                      .where('isTyping',
+                                                          isEqualTo: true)
+                                                      .get();
+                                              ref.docs.forEach((element) {
+                                                element.reference.update(
+                                                    {'isTyping': false});
+                                              });
+                                            });
+                                            // api.typing(Constants.userId, logic.nameData[2].toString());
+                                          }
+                                          logic.update();
+                                        },
+                                        onSubmitted: (val) async {
+                                          SharedPreferences prefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          if (logic.messageController.text
+                                              .trim()
+                                              .isNotEmpty) {
+                                            ///Message Store in to Firebase
+                                            logic.messages?.clear();
+                                            logic.scrollController.animateTo(
+                                              0.0,
+                                              duration:
+                                                  Duration(milliseconds: 300),
+                                              curve: Curves.easeOut,
+                                            );
+                                            logic.sendMessage(
+                                              MessageModel(
+                                                  senderId: logic.nameData[3],
+                                                  receiverId: logic.nameData[2],
+                                                  message: logic
+                                                      .messageController.text,
+                                                  read: false,
+                                                  audio: '',
+                                                  timestamp: Timestamp.now()),
+                                            );
+                                          }
+                                          logic.messageController.clear();
+                                        },
+                                        minLines: 1,
+                                        maxLines: null,
+                                        keyboardType: TextInputType.multiline,
+                                        textInputAction: TextInputAction.send,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: 'Type Here...',
+                                          hintStyle: TextStyle(
+                                              color:
+                                                  context.theme.indicatorColor),
+                                        ),
+                                      )),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          PermissionStatus storage =
+                                              await Permission.storage
+                                                  .request();
+                                          if (storage ==
+                                              PermissionStatus.granted) {
+                                            logic.pickImage();
+                                          } else if (storage ==
+                                              PermissionStatus.denied) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        'This permission is required')));
+                                          } else if (storage ==
+                                              PermissionStatus
+                                                  .permanentlyDenied) {
+                                            showDialog<String>(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                backgroundColor:
+                                                    Color(0XFFc4c4c4),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20)),
+                                                title: const Text(
+                                                    'Chat App does not have access to your photos.To enable access,tap Setting and turn on Photos.'),
+                                                actions: <Widget>[
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 10),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      children: [
+                                                        SizedBox(
+                                                          width: 100,
+                                                          child: Button(
+                                                            child: Text(
+                                                              'Cancel',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.blue,
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            color: Color(
+                                                                0XFFc4c4c4),
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 100,
+                                                          child: Button(
+                                                            child: Text(
+                                                                'Setting',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .blue,
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                )),
+                                                            onPressed: () {
+                                                              openAppSettings();
+                                                              Get.back();
+                                                            },
+                                                            color: Color(
+                                                                0XFFc4c4c4),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                            return;
+                                          }
+                                          // Get.back();
+                                        },
+                                        child: Icon(
+                                          Icons.image_outlined,
+                                          color: context.theme.indicatorColor,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 10,
+                                      ),
+                                      Icon(
+                                        Icons.emoji_emotions_outlined,
+                                        color: context.theme.indicatorColor,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                height: 50,
+                                width: Get.width - 70,
+                                decoration: BoxDecoration(
+                                    color: context.theme.cardColor,
+                                    borderRadius: BorderRadius.circular(50)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 5.0, right: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      logic.width <= 30?
+                                      Row(
+                                        children: [
+                                          Icon(Icons.mic,color: Colors.red,),
+                                          Text(
+                                            'Timer: ${logic.formatDuration(Duration(seconds: logic.timerValueInSeconds))}',
+                                          ),
+                                        ],
+                                      ):Stack(
+                                        children: [
+                                          Positioned(
+                                            child: AnimatedBuilder(
+                                              animation: controller,
+                                              builder: (context, child) {
+                                                return Opacity(
+                                                  opacity: 1 -
+                                                      logic.controller!.value,
+                                                  child:
+                                                  Transform.translate(
+                                                    offset: logic.moveAnimation!
+                                                        .value,
+                                                    child: child,
+                                                  ),
+                                                );
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(left: 20.0),
+                                                child: Icon(
+                                                  Icons.delete,
+                                                  size: 20,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      Shimmer.fromColors(
+                                          baseColor: Colors.grey,
+                                          highlightColor: Colors.grey.shade100,
+                                          direction: ShimmerDirection.rtl,
+                                          enabled: true,
+                                          child: Text(
+                                            'Slide to cancel <',
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 18),
+                                          )),
+                                      SizedBox(
+                                        width: logic.width,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
                         SizedBox(
                           width: 5,
                         ),
-                        BouncingButton(
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
-                              color: Colors.blueAccent,
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            child: Icon(Icons.send),
-                          ),
-                          onPressed: () {
-                            if (logic.messageController.text
-                                .trim()
-                                .isNotEmpty) {
-                              logic.messages?.clear();
-                              logic.scrollController.animateTo(
-                                0.0,
-                                duration: Duration(milliseconds: 300),
-                                curve: Curves.easeOut,
-                              );
-                              logic.sendMessage(MessageModel(
-                                  senderId: logic.nameData[3],
-                                  receiverId: logic.nameData[2],
-                                  message: logic.messageController.text,
-                                  read: false,
-                                  timestamp: Timestamp.now()));
+                        logic.messageController.text.trim().isEmpty
+                            ? GestureDetector(
 
-                              // logic.messages
-                              //     .add(logic.messageController.text.toString());
+                                onLongPressMoveUpdate: (details) {
+                                  ///leftSwipe detect
 
-                              // logic.scrollToBottom();
-                            }
-                            logic.messageController.clear();
-                          },
-                        ),
+                                  if (details.localPosition.dx < 0) {
+                                    if (logic.width <= 35) {
+                                      logic.width++;
+                                      logic.startAnimation();
+                                      logic.update();
+                                    }
+                                  }
+                                  ///UpSwipe detect
+                                  else if(details.localPosition.dy <=5){
+                                    logic.showMic = true;
+                                    logic.showTextField = true;
+                                    print('up');
+                                  }
+                                  },
+                                onLongPress: () async {
+                                  logic.showTextField = true;
+                                  logic.showLock = true;
+                                  logic.startTimer();
+                                  logic.update();
+                                  // final status =
+                                  //     await Permission.microphone.request();
+                                  // if (status == PermissionStatus.granted) {
+                                  //   logic.startRecording();
+                                  //   logic.audio.getDuration();
+                                  // }
+                                },
+                                onLongPressEnd: (details) {
+                                  if(logic.showMic == true){
+                                    logic.showTextField = true;
+                                  }
+                                  logic.stopTimer();
+                                  logic.showLock = false;
+                                  // logic.showTextField = false;
+                                  logic.width = 0;
+                                  logic.update();
+                                  // logic.stopRecording().then((value) {
+                                  //   print(logic.audio.getDuration());
+                                  // });
+                                },
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueAccent,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Icon(logic.showMic ? Icons.send :FontAwesomeIcons.microphone ),
+                                ))
+                            : BouncingButton(
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueAccent,
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  child: Icon(Icons.send),
+                                ),
+                                onPressed: () {
+                                  if (logic.messageController.text
+                                      .trim()
+                                      .isNotEmpty) {
+                                    logic.messages?.clear();
+                                    logic.scrollController.animateTo(
+                                      0.0,
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.easeOut,
+                                    );
+                                    logic.sendMessage(MessageModel(
+                                        senderId: logic.nameData[3],
+                                        receiverId: logic.nameData[2],
+                                        message:
+                                            logic.messageController.text ?? '',
+                                        read: false,
+                                        audio: '',
+                                        timestamp: Timestamp.now()));
+
+                                    // logic.messages
+                                    //     .add(logic.messageController.text.toString());
+
+                                    // logic.scrollToBottom();
+                                  }
+                                  logic.messageController.clear();
+                                },
+                              ),
                       ],
                     ),
                   ),
@@ -494,109 +654,6 @@ class ChatScreenPage extends StatelessWidget {
       },
     );
   }
-
-  Widget buildMessage(DocumentSnapshot document, color1, color2) {
-    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    Timestamp timestamp = data['timestamp'];
-    String formattedTime = DateFormat('hh:mm a').format(timestamp.toDate());
-    String receiverId = data['receiverId'];
-    bool read = data['read'];
-
-    if (read == false) {
-      api.readMessage(Constants.userId, logic.nameData[2]);
-    }
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: data['senderId'] == logic.nameData[3]
-          ? CrossAxisAlignment.end
-          : CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 5),
-          child: Wrap(
-            direction: Axis.vertical,
-            crossAxisAlignment: data['senderId'] == logic.nameData[3]
-                ? WrapCrossAlignment.end
-                : WrapCrossAlignment.start,
-            children: [
-              Container(
-                padding:
-                    EdgeInsets.only(left: 15, right: 15, top: 5, bottom: 5),
-                // height: 50,
-                decoration: data['senderId'] == logic.nameData[3]
-                    ? BoxDecoration(
-                        color: color1,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(20),
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20),
-                        ),
-                      )
-                    : BoxDecoration(
-                        color: color2,
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                            bottomRight: Radius.circular(20)),
-                      ),
-                child: Column(
-                  children: [
-                    Container(
-                      constraints: BoxConstraints(
-                        maxWidth: Get.width * 0.6,
-                      ),
-                      child: Column(
-                        crossAxisAlignment:
-                            data['senderId'] == logic.nameData[3]
-                                ? CrossAxisAlignment.end
-                                : CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            data['message'],
-                            softWrap: true,
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                formattedTime,
-                                softWrap: true,
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 11),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              data['senderId'] == logic.nameData[3]
-                                  ? read == false
-                                      ? Icon(
-                                          Icons.done,
-                                          size: 19,
-                                        )
-                                      : Icon(
-                                          Icons.done_all,
-                                          size: 19,
-                                          color: Color(0xFF024DFC),
-                                        )
-                                  : Text('')
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-
 }
 
 class TypingIndicator extends StatefulWidget {
@@ -640,9 +697,7 @@ class _TypingIndicatorState extends State<TypingIndicator>
 
     _appearanceController = AnimationController(
       vsync: this,
-    )..addListener(() {
-        setState(() {});
-      });
+    )..addListener(() {});
 
     _indicatorSpaceAnimation = CurvedAnimation(
       parent: _appearanceController,

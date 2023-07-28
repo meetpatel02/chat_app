@@ -72,7 +72,7 @@ class FirebaseManager {
         .doc(chatRoomId)
         .collection('message')
         .orderBy('timestamp', descending: true)
-    .limit(15)
+        .limit(15)
         .snapshots();
   }
 
